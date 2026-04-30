@@ -1,3 +1,9 @@
+//Filename: ICTE4.ino
+//Author: Sung-Po Chang
+//Date: 04/29/2026
+//Description: simple round-robin scheduler 
+//Version: 1.0
+
 #include "soc/timer_group_reg.h"
 #include "soc/gpio_reg.h"
 #include "soc/io_mux_reg.h"
@@ -24,16 +30,19 @@ int argLED1 = LED1_PIN;
 int argLED2 = LED2_PIN;
 int argPot  = POT_PIN;
 
+// 3. LED task
 void taskFlashLED(void *p) {
   int pin = *((int *)p); 
   *((volatile uint32_t *)GPIO_OUT_REG) ^= (1 << pin);
 }
 
+// 4. sensor task
 void taskReadPot(void *p) {
   int pin = *((int *)p);
   Serial.printf("Potentiometer (GPIO %d): %d\n", pin, analogRead(pin));
 }
 
+// 5. task list
 #define NTASKS 3
 TCB TaskList[NTASKS] = {
   {taskFlashLED, &argLED1, STATE_READY, 500000, 0}, // Task 1: 0.5s
